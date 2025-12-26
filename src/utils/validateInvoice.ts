@@ -11,8 +11,8 @@ const NAME_REGEX = /^[A-Za-z][A-Za-z .-]{1,48}$/;
 const ITEM_NAME_REGEX = /^[A-Za-z0-9][A-Za-z0-9 .-]{1,58}$/;
 
 // GST / VAT ID (generic alphanumeric, no symbols)
+// const TAX_ID_REGEX = /^[0-9A-Z]{15}$/;
 const TAX_ID_REGEX = /^[0-9A-Z]{15}$/;
-
 export function validateInvoice(invoice: Invoice): ValidationErrors {
   const errors: ValidationErrors = {};
 
@@ -29,12 +29,14 @@ export function validateInvoice(invoice: Invoice): ValidationErrors {
   }
 
   if (invoice.tax.mode !== "NONE") {
-    if (!invoice.seller.taxId?.trim()) {
+    const taxId = invoice.seller.taxId?.trim();
+
+    if (!taxId) {
       errors["seller.taxId"] = `${invoice.tax.label} ID is required`;
-    } else if (!TAX_ID_REGEX.test(invoice.seller.taxId)) {
+    } else if (!TAX_ID_REGEX.test(taxId)) {
       errors[
         "seller.taxId"
-      ] = `${invoice.tax.label} ID must be 15 letters/numbers`;
+      ] = `${invoice.tax.label} ID must be exactly 15 letters/numbers`;
     }
   }
 

@@ -17,6 +17,7 @@ import SellerSection from "../../components/invoice/SellerSection";
 import CustomerSection from "../../components/invoice/CustomerSection";
 import ItemsSection from "../../components/invoice/ItemsSection";
 import TotalsSection from "../../components/invoice/TotalsSection";
+import InvoiceActions from "../../pages/InvoiceActions";
 
 /* ---------------------------------- */
 
@@ -90,12 +91,14 @@ export default function InvoiceEditPage() {
       <div className="mx-auto max-w-4xl space-y-6">
         {/* Top Bar */}
         <div className="flex items-center justify-between">
-          <button
-            onClick={() => navigate(-1)}
-            className="text-sm text-sky-600 hover:underline"
-          >
-            ← Back
-          </button>
+          <InvoiceActions
+            invoice={invoice}
+            showDownload={false}
+            showPreview={false}
+            showDuplicate={false}
+            showShare={false}
+            showEdit={false}
+          />
 
           <span className="text-sm text-slate-500">Editing invoice</span>
         </div>

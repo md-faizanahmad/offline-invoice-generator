@@ -34,22 +34,7 @@
   <meta name="theme-color" content="#2563eb" />
   <meta name="mobile-web-app-capable" content="yes">
 
-  <!-- Preload critical assets (optional but improves LCP) -->
-  <link rel="preload" href="/src/main.tsx" as="script" />
 
-  <!-- Theme handling script (kept as is) -->
-  <script>
-    (function () {
-      const theme = localStorage.getItem("theme");
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-      if (theme === "dark" || (!theme && prefersDark)) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    })();
-  </script>
 </head>
 
 <body>

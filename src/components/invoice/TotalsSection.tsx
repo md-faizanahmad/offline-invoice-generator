@@ -1,4 +1,4 @@
-// src/components/invoice/TotalsSection.tsx
+import { motion } from "framer-motion";
 import type { Invoice } from "../../types/invoice";
 import type { InvoiceUpdater } from "../../types/invoiceUpdater";
 import { formatMoney } from "../../utils/formatMoney";
@@ -13,51 +13,48 @@ export default function TotalsSection({ invoice, setInvoice }: Props) {
   const { subtotal, taxAmount, total } = invoice.totals;
 
   return (
-    <div className="rounded-2xl bg-white/80 backdrop-blur-md border border-sky-100 shadow-lg overflow-hidden">
-      {/* Header */}
-      <div className="px-6 py-5 border-b border-sky-100">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center">
-            <Calculator className="w-5 h-5 text-sky-600" />
-          </div>
-          <h2 className="text-lg font-semibold text-indigo-900">Totals</h2>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.4 }}
+      className="rounded-2xl border border-sky-200/50 bg-white/90 shadow-md overflow-hidden backdrop-blur-sm"
+    >
+      <div className="flex items-center gap-3 border-b border-sky-100 bg-sky-50/50 px-5 py-4 sm:px-6">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-100 text-sky-600">
+          <Calculator className="h-5 w-5" />
         </div>
+        <h2 className="text-base font-semibold text-sky-900">Totals</h2>
       </div>
 
-      {/* Totals Display */}
-      <div className="p-6 space-y-4">
-        <div className="space-y-3">
-          {/* Subtotal */}
-          <div className="flex justify-between items-center text-slate-700">
+      <div className="p-5 space-y-5 sm:p-6">
+        <div className="space-y-4">
+          <div className="flex justify-between text-slate-700">
             <span className="font-medium">Subtotal</span>
-            <span className="text-lg font-medium text-slate-800">
+            <span className="font-medium text-slate-800">
               {formatMoney(subtotal, invoice.currency)}
             </span>
           </div>
 
-          {/* Tax (if applicable) */}
           {invoice.tax.mode !== "NONE" && (
-            <div className="flex justify-between items-center text-slate-700">
+            <div className="flex justify-between text-slate-700">
               <span className="font-medium">{invoice.tax.label}</span>
-              <span className="text-lg font-medium text-slate-800">
+              <span className="font-medium text-slate-800">
                 {formatMoney(taxAmount ?? 0, invoice.currency)}
               </span>
             </div>
           )}
 
-          {/* Grand Total */}
-          <div className="flex justify-between items-center pt-3 border-t border-sky-200">
-            <span className="font-semibold text-indigo-900 text-lg">
+          <div className="flex justify-between border-t border-sky-200 pt-4">
+            <span className="font-semibold text-sky-900 text-lg">
               Grand Total
             </span>
-            <span className="font-bold text-xl text-indigo-700">
+            <span className="font-bold text-xl text-sky-700">
               {formatMoney(total, invoice.currency)}
             </span>
           </div>
         </div>
 
-        {/* QR Code Option */}
-        <div className="mt-6 pt-4 border-t border-sky-100">
+        <div className="pt-4 border-t border-sky-100">
           <label className="flex items-center gap-3 cursor-pointer group">
             <div className="relative">
               <input
@@ -69,23 +66,21 @@ export default function TotalsSection({ invoice, setInvoice }: Props) {
                     qrEnabled: e.target.checked,
                   }))
                 }
-                className="w-5 h-5 rounded border-sky-300 text-sky-600 
-                           focus:ring-sky-500 cursor-pointer"
+                className="h-5 w-5 rounded border-sky-300 text-sky-600 focus:ring-sky-500"
               />
-              <div className="absolute inset-0 rounded border border-sky-200 group-hover:border-sky-300 transition-colors pointer-events-none" />
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <QrCode className="w-5 h-5 text-sky-600" />
-              <span className="text-slate-700 font-medium">
-                Include QR code in invoice
+            <div className="flex items-center gap-2">
+              <QrCode className="h-5 w-5 text-sky-600" />
+              <span className="text-sm font-medium text-slate-700">
+                Include QR code
               </span>
             </div>
           </label>
           <p className="mt-1 text-xs text-slate-500 italic">
-            QR code will link to payment details or invoice verification
+            For payment link or verification
           </p>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

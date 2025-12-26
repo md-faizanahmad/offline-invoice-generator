@@ -1,9 +1,10 @@
+import { openDB, STORES } from "../lib/db/database";
 import type { Invoice } from "../types/invoice";
-import { openInvoiceDB } from "../lib/db/openInvoiceDB";
+// import { openInvoiceDB } from "../lib/db/openInvoiceDB";
 
 export async function generateInvoiceNumber(invoice: Invoice): Promise<string> {
-  const db = await openInvoiceDB();
-
+  const db = await openDB();
+  console.log("Stores:", [...db.objectStoreNames]);
   const year = new Date().getFullYear();
 
   const prefix =
@@ -13,8 +14,8 @@ export async function generateInvoiceNumber(invoice: Invoice): Promise<string> {
 
   const key = `${year}-${prefix}`;
 
-  const tx = db.transaction("invoice-counters", "readwrite");
-  const store = tx.objectStore("invoice-counters");
+  const tx = db.transaction(STORES.COUNTERS, "readwrite");
+  const store = tx.objectStore(STORES.COUNTERS);
 
   const current = await new Promise<{ key: string; count: number } | undefined>(
     (resolve) => {

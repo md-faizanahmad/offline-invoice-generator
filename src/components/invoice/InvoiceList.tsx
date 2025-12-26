@@ -70,6 +70,7 @@ export default function InvoiceList() {
       {/* List Card */}
       <div className="rounded-xl border border-sky-100 bg-white shadow-sm overflow-hidden">
         {/* Header */}
+
         <div className="flex items-center gap-2 border-b border-sky-100 px-4 py-3">
           <Clock className="h-4 w-4 text-sky-600" />
           <h2 className="text-sm font-semibold text-slate-800">
@@ -103,6 +104,13 @@ export default function InvoiceList() {
 
               {/* Actions */}
               <div className="flex items-center gap-1 sm:gap-2">
+                <Link
+                  to={`/`}
+                  className="rounded-md p-2 text-sky-600 hover:bg-sky-100"
+                  title="View"
+                >
+                  Back
+                </Link>
                 <Link
                   to={`/invoice/view/${inv.id}`}
                   className="rounded-md p-2 text-sky-600 hover:bg-sky-100"

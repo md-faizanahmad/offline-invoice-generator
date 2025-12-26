@@ -1,35 +1,11 @@
 import type { Invoice } from "../../types/invoice";
-import { openInvoiceDB } from "./openInvoiceDB";
-
-const DB_NAME = "invoice-db";
-const STORE = "invoices";
-const VERSION = 2;
+import { openDB, STORES } from "./database";
 
 /* ---------- DB OPEN ---------- */
-function openDB(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, VERSION);
-
-    req.onupgradeneeded = () => {
-      const db = req.result;
-
-      if (!db.objectStoreNames.contains(STORE)) {
-        const store = db.createObjectStore(STORE, {
-          keyPath: "id",
-        });
-
-        store.createIndex("createdAt", "createdAt");
-      }
-    };
-
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
 
 /* ---------- CREATE or UPDATE ---------- */
 export async function saveInvoice(invoice: Invoice): Promise<void> {
-  const db = await openInvoiceDB();
+  const db = await openDB();
   const tx = db.transaction("invoices", "readwrite");
   tx.objectStore("invoices").put(invoice);
 
@@ -45,8 +21,8 @@ export async function saveInvoice(invoice: Invoice): Promise<void> {
 /* ---------- GET ONE (Edit) ---------- */
 export async function getInvoiceById(id: string): Promise<Invoice | undefined> {
   const db = await openDB();
-  const tx = db.transaction(STORE, "readonly");
-  const req = tx.objectStore(STORE).get(id);
+  const tx = db.transaction(STORES.INVOICES, "readonly");
+  const req = tx.objectStore(STORES.INVOICES).get(id);
 
   return new Promise((resolve) => {
     req.onsuccess = () => resolve(req.result);
@@ -56,8 +32,8 @@ export async function getInvoiceById(id: string): Promise<Invoice | undefined> {
 /* ---------- LIST RECENT (latest first) ---------- */
 export async function getRecentInvoices(limit = 5): Promise<Invoice[]> {
   const db = await openDB();
-  const tx = db.transaction(STORE, "readonly");
-  const store = tx.objectStore(STORE);
+  const tx = db.transaction(STORES.INVOICES, "readonly");
+  const store = tx.objectStore(STORES.INVOICES);
   const index = store.index("createdAt");
 
   return new Promise((resolve) => {
@@ -76,9 +52,9 @@ export async function getRecentInvoices(limit = 5): Promise<Invoice[]> {
   });
 }
 export async function deleteInvoice(id: string): Promise<void> {
-  const db = await openInvoiceDB();
-  const tx = db.transaction("invoices", "readwrite");
-  tx.objectStore("invoices").delete(id);
+  const db = await openDB();
+  const tx = db.transaction(STORES.INVOICES, "readwrite");
+  tx.objectStore(STORES.INVOICES).delete(id);
 
   return new Promise((resolve, reject) => {
     tx.oncomplete = () => {
